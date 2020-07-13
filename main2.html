@@ -20,7 +20,9 @@
             </div>
             <div id="cf4">              
             </div>
-
+        <div id="url1" data-url1="" ></div>
+        <div id="url2" data-url2="" ></div>
+        <div id="url3" data-url3=""></div>
           </div>
         </div>
           <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
@@ -28,20 +30,16 @@
           <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
           <script src="https://momentjs.com/downloads/moment.js" ></script>
           <script>
-            var getflatsNosUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7?sheet=Helper"
-            var filterMontlyMntsUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=Mtns&FlatNo="
-            var filterCfThreeUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=CF3&FlatNo="
-            var filterCfFourUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=CF4&FlatNo="
-         $(document).ready(function(){
-                  Init()
+           
+         $(document).ready(function(){    
+          CheckApi();              
                   $(".selectflat").on('change',function(){
-
                     console.log("selected "+$(".selectflat option:selected").text());
                     var selectedFlat = $(".selectflat option:selected").text();
                     if(selectedFlat != "Select"){
-                    getMntnsThisMonth(selectedFlat);
-                    getCFThree(selectedFlat);
-                    getCFFour(selectedFlat);      
+                      getMntnsThisMonth(selectedFlat);
+                      getCFThree(selectedFlat);
+                      getCFFour(selectedFlat);      
                     }else{
                       $("#monthlyMnts").empty();
                       $("#cf3").empty();
@@ -50,26 +48,22 @@
                   })
          });
         
-        function Init(){
+        function Init(url){
             $("#flats").empty();
-            $.getJSON(getflatsNosUrl, function(data) {                 
+            $.getJSON(url, function(data) {                 
                     var entry = data ;
                     $("#flats").append('<option class="select0" selected value="0" >Select</option>');
                     $(entry).each(function(i,d){  
                       $("#flats").append("<option class=ft"+d.Flats+" value="+d.Flats+">"+d.Flats+"</option>");
                     });                 
-                }).fail(function(jqXHR) {
-                if (jqXHR.status == 429) {
-                    alert("too many requests");
-                } else {
-                    alert("Something went wrong please try later");
-                }
+                }).fail(function(jqXHR) {                
+                    alert("Something went wrong please try later");                
             });
         }
         
         function getMntnsThisMonth(flat){
             $("#monthlyMnts").empty();
-            var fullUrl = filterMontlyMntsUrl+flat;
+            var fullUrl = $("#url1").attr('data-url1')+flat;
             $.getJSON(fullUrl, function(data) {                  
                     var entry = data[0]
                     console.log(JSON.stringify(data))
@@ -88,7 +82,7 @@
         
         function getCFThree(flat){
             $("#cf3").empty();
-            var fullUrl = filterCfThreeUrl+flat;
+            var fullUrl = $("#url2").attr('data-url2')+flat;
             $.getJSON(fullUrl, function(data) {                  
                     var entry = data
                     console.log(JSON.stringify(data))
@@ -110,7 +104,7 @@
         
         function getCFFour(flat){
             $("#cf4").empty();
-            var fullUrl = filterCfFourUrl+flat;
+            var fullUrl = $("#url3").attr('data-url3')+flat;
             $.getJSON(fullUrl, function(data) {                  
                     var entry = data
                     console.log(JSON.stringify(data))
@@ -128,6 +122,41 @@
                         $("#cf4").append(monthdetails);
                     }
                 });
+        }
+
+        function CheckApi(){
+          var sheetsDB = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/name"
+          var sheetBest = "https://sheet.best/api/sheets/2591615b-b837-48dc-bd1b-b6e07a5d49f7/tabs/helper"
+          var setApi = ""
+          $.getJSON(sheetsDB, function(data) {                 
+              var getflatsNosUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7?sheet=Helper"
+              var filterMontlyMntsUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=Mtns&FlatNo="
+              var filterCfThreeUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=CF3&FlatNo="
+              var filterCfFourUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=CF4&FlatNo="
+                Init(getflatsNosUrl)
+                $("#urls").attr('data-url1',filterMontlyMntsUrl).attr('data-url2',filterCfThreeUrl),attr('data-url3',filterCfFourUrl);
+                }).fail(function(jqXHR) {
+                if (jqXHR.status == 429) {
+                  $.getJSON(sheetBest, function(data) { 
+                    var getflatsNosUrl = "https://sheet.best/api/sheets/2591615b-b837-48dc-bd1b-b6e07a5d49f7/tabs/helper"
+                    var filterMontlyMntsUrl = "https://sheet.best/api/sheets/2591615b-b837-48dc-bd1b-b6e07a5d49f7/tabs/Mtns/search?FlatNo="
+                    var filterCfThreeUrl = "https://sheet.best/api/sheets/2591615b-b837-48dc-bd1b-b6e07a5d49f7/tabs/CF3/search?FlatNo="
+                    var filterCfFourUrl = "https://sheet.best/api/sheets/2591615b-b837-48dc-bd1b-b6e07a5d49f7/tabs/CF4/search?FlatNo="
+                    $("#url1").attr('data-url1',filterMontlyMntsUrl)
+                    $("#url2").attr('data-url2',filterCfThreeUrl)
+                    $("#url3").attr('data-url3',filterCfFourUrl)
+                    Init(getflatsNosUrl)
+                    
+
+                  }).fail(function(jqXHR){
+                    // another api
+
+                  })
+                   
+                } else {
+                    $("#error").append("Please try after some time")
+                }
+            });
         }
         </script>
     
