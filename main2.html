@@ -133,8 +133,10 @@
               var filterMontlyMntsUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=Mtns&FlatNo="
               var filterCfThreeUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=CF3&FlatNo="
               var filterCfFourUrl = "https://sheetdb.io/api/v1/6ayt34qvzf2a7/search?sheet=CF4&FlatNo="
-                Init(getflatsNosUrl)
-                $("#urls").attr('data-url1',filterMontlyMntsUrl).attr('data-url2',filterCfThreeUrl),attr('data-url3',filterCfFourUrl);
+                    $("#url1").attr('data-url1',filterMontlyMntsUrl)
+                    $("#url2").attr('data-url2',filterCfThreeUrl)
+                    $("#url3").attr('data-url3',filterCfFourUrl)  
+                    Init(getflatsNosUrl)                
                 }).fail(function(jqXHR) {
                 if (jqXHR.status == 429) {
                   $.getJSON(sheetBest, function(data) { 
